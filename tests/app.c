@@ -2,7 +2,7 @@
 // Created by maxim on 27.11.23.
 //
 
-#include <yandex_disk_api.h>
+#include <yadisk.h>
 #include <stdio.h>
 
 int main() {
