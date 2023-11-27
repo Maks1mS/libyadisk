@@ -17,7 +17,7 @@ typedef struct yadisk_api_client
 
 typedef struct yadisk_disk_info
 {
-    long total_space;
+    unsigned long total_space;
 } yadisk_disk_info;
 
 void yadisk_get_disk(yadisk_api_client* client, yadisk_disk_info* info);

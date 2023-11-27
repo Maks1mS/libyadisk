@@ -17,21 +17,23 @@ static int api_http_request(
 
 void yadisk_get_disk(yadisk_api_client *client, yadisk_disk_info* info) {
     char* output = NULL;
-    int result = api_http_request(client, "GET", "/v1/disk", &output);
+    int error = api_http_request(client, "GET", "/v1/disk", &output);
     json_object* root = json_tokener_parse(output);
-    free(output);
 
-    if (!result) {
+    if (error) {
         json_object_put(root);
         return;
     }
 
     json_object* total_space = NULL;
-    json_object_object_get_ex(root, "total_space", &total_space);
-    info->total_space = json_object_get_int64(total_space);
+    if (!json_object_object_get_ex(root, "total_space", &total_space)) {
+        printf("Key total_space doesn't exists!");
+    }
+    info->total_space = json_object_get_uint64(total_space);
     json_object_put(total_space);
 
     json_object_put(root);
+    free(output);
 }
 
 void yadisk_delete_disk_resources(yadisk_api_client *client) {
