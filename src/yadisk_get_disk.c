@@ -5,7 +5,8 @@
 #include "yadisk_get_disk.h"
 #include "yadisk_api_internal.h"
 
-yadisk_code yadisk_get_disk(yadisk_api_client *client, yadisk_disk_info* info) {
+yadisk_code yadisk_get_disk(yadisk_api_client* client, yadisk_disk_info* info)
+{
     char* output = NULL;
     int error = api_http_request(client, "GET", "/v1/disk", NULL, 0, &output);
     json_object* root = json_tokener_parse(output);

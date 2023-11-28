@@ -7,11 +7,10 @@
 
 #include "yadisk_shared.h"
 
-typedef struct yadisk_disk_info
-{
+typedef struct yadisk_disk_info {
     unsigned long total_space;
 } yadisk_disk_info;
 
-yadisk_code yadisk_get_disk(yadisk_api_client *client, yadisk_disk_info* info);
+yadisk_code yadisk_get_disk(yadisk_api_client* client, yadisk_disk_info* info);
 
 #endif //YADISK_YADISK_GET_DISK_H

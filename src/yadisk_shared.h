@@ -14,8 +14,7 @@ typedef enum {
     YADISK_FAILED_PARSE_JSON = 1
 } yadisk_code;
 
-typedef struct
-{
+typedef struct {
     char* token;
 } yadisk_api_client;
 
