@@ -5,7 +5,8 @@
 #include <yadisk.h>
 #include <stdio.h>
 
-int main() {
+int main()
+{
     char token[1024];
 
     printf("Enter OAuth token: ");
@@ -13,8 +14,8 @@ int main() {
 
     yadisk_init();
 
-    yadisk_api_client* client = &(yadisk_api_client){
-            .token = token
+    yadisk_api_client* client = &(yadisk_api_client) {
+        .token = token
     };
 
     yadisk_disk_info yadisk_disk_info;

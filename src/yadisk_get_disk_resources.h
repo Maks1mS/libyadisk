@@ -14,8 +14,7 @@
     const char* created; \
     const char* modified;
 
-struct yadisk_resource_item
-{
+struct yadisk_resource_item {
     YADISK_RESOURCE_ITEM_PROPERTIES
 };
 
