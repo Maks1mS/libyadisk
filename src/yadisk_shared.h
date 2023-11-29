@@ -11,11 +11,15 @@
 
 typedef enum {
     YADISK_OK = 0,
-    YADISK_FAILED_PARSE_JSON = 1
+    YADISK_FAILED_PARSE_JSON = 1,
+    YADISK_FAILED_HTTP_REQUEST = 2
 } yadisk_code;
 
 typedef struct {
     char* token;
 } yadisk_api_client;
+
+int yadisk_init();
+void yadisk_cleanup();
 
 #endif //YADISK_YADISK_SHARED_H

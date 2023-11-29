@@ -14,22 +14,61 @@ struct memory {
     size_t size;
 };
 
-// Callback function for writing response data
-static size_t write_callback(void *contents, size_t size, size_t nmemb, struct memory *mem) {
+struct data {
+    char trace_ascii; /* 1 or 0 */
+};
+
+
+static size_t cb(void *data, size_t size, size_t nmemb, void *clientp)
+{
     size_t realsize = size * nmemb;
+    struct memory *mem = (struct memory *)clientp;
+
     char *ptr = realloc(mem->response, mem->size + realsize + 1);
-    if(!ptr) {
-        // out of memory
-        printf("not enough memory (realloc returned NULL)\n");
-        return 0;
-    }
+    if(ptr == NULL)
+        return 0;  /* out of memory! */
 
     mem->response = ptr;
-    memcpy(&(mem->response[mem->size]), contents, realsize);
+    memcpy(&(mem->response[mem->size]), data, realsize);
     mem->size += realsize;
     mem->response[mem->size] = 0;
 
     return realsize;
+}
+
+char* build_query_string(query_param *params, size_t num_params) {
+    CURL *curl = curl_easy_init();
+    if (!curl) {
+        return NULL;
+    }
+
+    char *query = NULL;
+    size_t query_len = 0;
+
+    for (size_t i = 0; i < num_params; ++i) {
+        char *encoded_key = curl_easy_escape(curl, params[i].key, 0);
+        char *encoded_value = curl_easy_escape(curl, params[i].value, 0);
+
+        // Calculate additional space needed: key=value& (including null terminator)
+        size_t additional_len = strlen(encoded_key) + strlen(encoded_value) + 2;
+        if (i < num_params - 1) {
+            additional_len++; // For '&'
+        }
+
+        query = realloc(query, query_len + additional_len);
+        sprintf(query + query_len, "%s=%s", encoded_key, encoded_value);
+        query_len += additional_len - 1; // Minus null terminator
+
+        if (i < num_params - 1) {
+            strcat(query, "&");
+        }
+
+        curl_free(encoded_key);
+        curl_free(encoded_value);
+    }
+
+    curl_easy_cleanup(curl);
+    return query;
 }
 
 // Function to make an HTTP request using libcurl
@@ -45,14 +84,19 @@ int api_http_request(
     CURLcode res;
     struct memory chunk = {0};
 
-    curl_global_init(CURL_GLOBAL_ALL);
     curl = curl_easy_init();
 
     if(curl) {
-        char url[256];
-        snprintf(url, sizeof(url), "%s%s", YANDEX_DISK_API_HOST, path);
+        char url[512];
+        if (num_params) {
+            char *query_string = build_query_string(params, num_params);
+            snprintf(url, sizeof(url), "%s%s?%s", YANDEX_DISK_API_HOST, path, query_string);
+            free(query_string);
+        } else {
+            snprintf(url, sizeof(url), "%s%s", YANDEX_DISK_API_HOST, path);
+        }
         curl_easy_setopt(curl, CURLOPT_URL, url);
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, cb);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
 
         // Set the HTTP method
@@ -79,7 +123,6 @@ int api_http_request(
             fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
             free(chunk.response);
             curl_easy_cleanup(curl);
-            curl_global_cleanup();
             return -1;
         } else {
             *output = strdup(chunk.response);
@@ -91,6 +134,5 @@ int api_http_request(
         curl_easy_cleanup(curl);
     }
 
-    curl_global_cleanup();
     return 0;
 }
