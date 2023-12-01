@@ -34,14 +34,42 @@ int main()
         .token = token
     };
 
-    yadisk_disk_info yadisk_disk_info;
-    yadisk_get_disk(client, &yadisk_disk_info);
+    yadisk_disk_info info;
+    yadisk_get_disk(client, &info);
 
-    printf("Total disk size: %lu\n", yadisk_disk_info.total_space);
-    printf("Trash size: %lu\n", yadisk_disk_info.trash_size);
-    printf("Used space: %lu\n", yadisk_disk_info.used_space);
-    printf("Registration time: %s\n", yadisk_disk_info.reg_time);
-    printf("Is paid: %s\n", yadisk_disk_info.is_paid ? "Yes" : "No");
+    printf("Total disk size: %lu\n", info.total_space);
+    printf("Trash size: %lu\n", info.trash_size);
+    printf("Used space: %lu\n", info.used_space);
+    printf("Registration time: %s\n", info.reg_time);
+    printf("Is paid: %s\n", info.is_paid ? "Yes" : "No");
+
+    printf("User Info:\n");
+    printf("  Registration time: %s\n", info.user.reg_time);
+    printf("  Display Name: %s\n", info.user.display_name);
+    printf("  UID: %s\n", info.user.uid);
+    printf("  Country: %s\n", info.user.country);
+    printf("  Is Child: %s\n", info.user.is_child ? "Yes" : "No");
+    printf("  Login: %s\n", info.user.login);
+
+    printf("System Folders:\n");
+    printf("  Odnoklassniki: %s\n", info.system_folders.odnoklassniki);
+    printf("  Google: %s\n", info.system_folders.google);
+    printf("  Instagram: %s\n", info.system_folders.instagram);
+    printf("  Vkontakte: %s\n", info.system_folders.vkontakte);
+    printf("  Attach: %s\n", info.system_folders.attach);
+    printf("  Mailru: %s\n", info.system_folders.mailru);
+    printf("  Downloads: %s\n", info.system_folders.downloads);
+    printf("  Applications: %s\n", info.system_folders.applications);
+    printf("  Facebook: %s\n", info.system_folders.facebook);
+    printf("  Social: %s\n", info.system_folders.social);
+    printf("  Messenger: %s\n", info.system_folders.messenger);
+    printf("  Calendar: %s\n", info.system_folders.calendar);
+    printf("  Photostream: %s\n", info.system_folders.photostream);
+    printf("  Screenshots: %s\n", info.system_folders.screenshots);
+    printf("  Scans: %s\n", info.system_folders.scans);
+
+    printf("Unlimited Autoupload Enabled: %s\n", info.unlimited_autoupload_enabled ? "Yes" : "No");
+    printf("Revision: %lu\n", info.revision);
 
     printf("=================\n");
 

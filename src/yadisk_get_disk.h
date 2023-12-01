@@ -24,12 +24,43 @@
 
 #include "yadisk_shared.h"
 
+typedef struct {
+    const char* reg_time;
+    const char* display_name;
+    const char* uid;
+    const char* country;
+    int is_child;
+    const char* login;
+} yadisk_user_info;
+
+typedef struct {
+    const char* odnoklassniki;
+    const char* google;
+    const char* instagram;
+    const char* vkontakte;
+    const char* attach;
+    const char* mailru;
+    const char* downloads;
+    const char* applications;
+    const char* facebook;
+    const char* social;
+    const char* messenger;
+    const char* calendar;
+    const char* photostream;
+    const char* screenshots;
+    const char* scans;
+} yadisk_system_folders;
+
 typedef struct yadisk_disk_info {
     unsigned long total_space;
     unsigned long trash_size;
     unsigned long used_space;
     int is_paid;
     const char* reg_time;
+    yadisk_system_folders system_folders;
+    yadisk_user_info user;
+    int unlimited_autoupload_enabled;
+    unsigned long revision;
 } yadisk_disk_info;
 
 yadisk_code yadisk_get_disk(yadisk_api_client* client, yadisk_disk_info* info);
